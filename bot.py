@@ -204,7 +204,7 @@ def show_weather_default(call):
         connect.close()
     except Exception as e:
         logging.error('Произошла ошибка')
-        bot.send_message(message.chat.id, 'Произошла ошибка. Убедитесь в достоверности данных')
+        bot.send_message(chat_id, 'Произошла ошибка. Убедитесь в достоверности данных')
 
 
 
