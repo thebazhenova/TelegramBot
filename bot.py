@@ -13,8 +13,7 @@ bot = telebot.TeleBot('7979937153:AAHCnz14491woEq7ds6atdnUDbWesXUO7_Y')
 keyboard = types.ReplyKeyboardMarkup(row_width=3,resize_keyboard=True)
 bt = types.KeyboardButton('Прогноз погоды')
 bt2 = types.KeyboardButton('Настройки')
-bt3 = types.KeyboardButton('Подобрать одежду')
-keyboard.add(bt, bt2, bt3)
+keyboard.add(bt, bt2)
 keyboard_inline_one = types.InlineKeyboardMarkup()
 keyboard_inline_two = types.InlineKeyboardMarkup()
 button = types.InlineKeyboardButton(text='Город по умолчанию', callback_data='get_weather')
@@ -110,52 +109,6 @@ def set_default_city(message, user_id, cursor, connect):
     bot.send_message(message.chat.id, f'Город по умолчанию обновлен: {new_default_city}')
 
 
-@bot.message_handler(func=lambda message: message.text.lower() == 'подобрать одежду')
-def show_weaher(message):
-    bot.send_message(message.chat.id, "Введите город:")
-    chat_id = message.chat.id
-
-    @bot.message_handler(func=lambda message: True)
-    def get_city(message):
-        try:
-            user_cities[chat_id] = message.text
-            city = message.text
-
-            if city:
-                url = ('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347')
-
-                # Обработка запроса и превращение в объект
-
-                weather_data = requests.get(url).json()
-
-                weather_data_structure = json.dumps(weather_data, indent=2)
-
-                # print(weather_data_structure)
-
-                # Обработка переменных по структуре weather_data
-
-                temperature = round(weather_data['main']['temp'])
-
-                bot.send_message(message.chat.id, f'Ваш город {city}\nСейчас температура в городе:{temperature}°C')
-                if temperature > 25:
-                    bot.send_message(message.chat.id, 'Пей водичку и стой в тени')
-                elif 15 <= temperature <= 25:
-                    bot.send_message(message.chat.id, 'В такую погоду следует надеть панаму и майку алкоголичку')
-                elif 14 >= temperature >= 5:
-                    bot.send_message(message.chat.id, 'В такую погоду отлично зайдет папин олимпос и джинсы моряка')
-                elif 4 >= temperature >= 0:
-                    bot.send_message(message.chat.id, 'Пора задумывать о батиных трениках и подштанниках')
-                elif -1 >= temperature >= -5:
-                    bot.send_message(message.chat.id, 'Трусы и шлем отменяются, скоро зима бери куртку и шапку')
-                elif -6 >= temperature >= -15:
-                    bot.send_message(message.chat.id, 'Чем теплее тем лучше, явно подойдет дубленка или шуба')
-                elif -16 >= temperature >= -30:
-                    bot.send_message(message.chat.id, 'Новый год, новый год, новый год... Ну все самый теплый пуховик, колготки восемь тысяч ден')
-                elif temperature <= -31:
-                    bot.send_message(message.chat.id, 'Сиди лучше дома')
-        except Exception as e:
-            logging.error('Произошла ошибка')
-            bot.send_message(message.chat.id, 'Произошла ошибка. Убедитесь в достоверности данных')
 # ВЫВОД ИНЛАЙН КЛАВЫ НА ОПРЕДЕЛИНЕ ПО КАКОМУ УКАЗЫВАТЬ ГОРОД
 @bot.message_handler(func=lambda message: message.text.lower() == 'прогноз погоды')
 def show_weather(message):
